@@ -6,6 +6,7 @@ require('dotenv').config();
 
 // Import Middleware
 const logger = require('./middleware/logger')
+app.use(express.json())
 app.use(logger)
 const connection = require('./middleware/db_connect');
 

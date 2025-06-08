@@ -1,4 +1,5 @@
-FROM node:18.16.0  #ini base image
+#ini base image
+FROM node:18.16.0 
 WORKDIR /app
 ADD . /app
 RUN npm install

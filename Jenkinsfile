@@ -21,8 +21,7 @@ pipeline {
         }
         stage('Code Review with Sonarqube') {
             steps {
-                sh '''cd apps
-                sonar-scanner \
+                sh '''sonar-scanner \
                 -Dsonar.projectKey=simple-apps \
                 -Dsonar.sources=. \
                 -Dsonar.host.url=http://172.23.15.67:9000 \

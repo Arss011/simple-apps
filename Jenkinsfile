@@ -38,5 +38,13 @@ pipeline {
                 '''
             }
         }
+        stage('Upload to Registry Image') {
+            steps {
+                sh '''
+                docker tag simple-apps-apps Arss011/simple-apps-apps:v1.0
+                docker push Arss011/simple-apps-apps:v1.0
+                '''
+            }
+        }
     }
 }

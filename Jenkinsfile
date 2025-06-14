@@ -38,5 +38,13 @@ pipeline {
                 '''
             }
         }
+        stage('Upload to Regestry Image') {
+            steps {
+                sh '''
+                docker tag simple-apps-apps esanugraha/simple-apps-apps:v1.0
+                docker push esanugraha/simple-apps-apps:v1.0
+                '''
+            }
+        }
     }
 }

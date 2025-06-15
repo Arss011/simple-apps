@@ -6,7 +6,7 @@ pipeline {
     environment {
         GIT_REPO_URL          = 'https://github.com/Arss011/simple-apps.git'
         
-        DOCKER_CREDENTIALS_ID = 'dockerhub-credentials'
+        DOCKER_CREDENTIALS_ID = 'arss011'
         DOCKER_IMAGE_NAME     = 'arss011/simple-apps-apps'
         IMAGE_TAG             = 'v1.0'
         
@@ -44,22 +44,12 @@ pipeline {
             }
         }
         
-        stage('Build and Push Docker Image') {
+        stage('Upload to Regestry Image') {
             steps {
-                withDockerRegistry(credentialsId: env.DOCKER_CREDENTIALS_ID) {
-                    sh """
-                    docker compose down
-                    docker image prune -f
-                    docker compose build
-                    
-                    # Memberi tag pada image yang sudah di-build oleh compose
-                    # 'simple-apps-apps' adalah nama service di docker-compose.yml
-                    docker tag ${env.DOCKER_IMAGE_NAME} ${env.DOCKER_IMAGE_NAME}:${env.IMAGE_TAG}
-                    
-                    # Mendorong image ke Docker Hub
-                    docker push ${env.DOCKER_IMAGE_NAME}:${env.IMAGE_TAG}
-                    """
-                }
+                sh '''
+                docker tag ${DOCKER_IMAGE_NAME} ${DOCKER_CREDENTIALS_ID}/${DOCKER_IMAGE_NAME}:v1.0
+                docker push ${DOCKER_HUB_USER}/${DOCKER_IMAGE_NAME}:${VERSION}
+                '''
             }
         }
     }

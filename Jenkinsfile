@@ -4,18 +4,22 @@ pipeline {
     tools { nodejs "Nodejs-18.16.0" }
 
     environment {
+        // --- Konfigurasi Repositori ---
         GIT_REPO_URL          = 'https://github.com/Arss011/simple-apps.git'
         
+        // --- Konfigurasi Docker ---
+        // ID kredensial Docker Hub yang ada di Jenkins. WAJIB BENAR!
         DOCKER_CREDENTIALS_ID = 'arss011'
-        DOCKER_IMAGE_NAME     = 'simple-apps-apps'
+        // Nama lengkap image di Docker Hub (username/repo)
+        DOCKER_IMAGE_NAME     = 'arss011/simple-apps-apps'
         IMAGE_TAG             = 'v1.0'
+        // Nama service yang ada di file docker-compose.yml
+        COMPOSE_SERVICE_NAME  = 'apps' 
         
+        // --- Konfigurasi SonarQube ---
         SONAR_HOST_URL        = 'http://172.23.15.67:9000'
         SONAR_PROJECT_KEY     = 'simple-apps'
-        SONAR_TOKEN_ID        = 'squ_d81d1efd61743b14d99266316f5cf832c52b1d58'
-        
-        DOCKER_HUB_USER       = 'arss011'
-        VERSION               = 'v1.0'
+        SONAR_TOKEN_ID        = 'sonarqube-token'
     }
 
     stages {
@@ -39,20 +43,36 @@ pipeline {
         
         stage('Code Review with Sonarqube') {
             steps {
-                sh '''sonar-scanner \
-                -Dsonar.projectKey=simple-apps \
-                -Dsonar.sources=. \
-                -Dsonar.host.url=http://172.23.15.67:9000 \
-                -Dsonar.login=${SONAR_TOKEN_ID}'''
+                withCredentials([string(credentialsId: env.SONAR_TOKEN_ID, variable: 'SONAR_SECRET_TOKEN')]) {
+                    sh """sonar-scanner \
+                       -Dsonar.projectKey=${env.SONAR_PROJECT_KEY} \
+                       -Dsonar.sources=. \
+                       -Dsonar.host.url=${env.SONAR_HOST_URL} \
+                       -Dsonar.login=${SONAR_SECRET_TOKEN}"""
+                }
             }
         }
         
-        stage('Upload to Regestry Image') {
+        // Menggabungkan Build, Deploy, dan Push dalam satu stage yang aman
+        stage('Build and Push to Docker Registry') {
             steps {
-                sh '''
-                docker tag ${DOCKER_IMAGE_NAME} ${DOCKER_CREDENTIALS_ID}/${DOCKER_IMAGE_NAME}:${VERSION}
-                docker push ${DOCKER_HUB_USER}/${DOCKER_IMAGE_NAME}:${VERSION}
-                '''
+                // MEMBUNGKUS SEMUA PERINTAH DOCKER DENGAN BLOK INI
+                withDockerRegistry(credentialsId: env.DOCKER_CREDENTIALS_ID) {
+                    // MENGGUNAKAN KUTIP GANDA """...""" AGAR VARIABEL TERBACA
+                    sh """
+                    docker compose down
+                    docker image prune -f
+                    docker compose build
+                    
+                    # Memberi tag pada image yang di-build oleh compose.
+                    # Asumsinya nama service di docker-compose adalah 'apps'.
+                    # Ini akan membuat tag seperti 'arss011/simple-apps-apps:v1.0'.
+                    docker tag ${env.COMPOSE_SERVICE_NAME}:latest ${env.DOCKER_IMAGE_NAME}:${env.IMAGE_TAG}
+                    
+                    # Mendorong image yang sudah diberi tag ke Docker Hub.
+                    docker push ${env.DOCKER_IMAGE_NAME}:${env.IMAGE_TAG}
+                    """
+                }
             }
         }
     }

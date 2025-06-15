@@ -9,7 +9,7 @@ pipeline {
         
         // --- Konfigurasi Docker ---
         // ID kredensial Docker Hub yang ada di Jenkins. WAJIB BENAR!
-        DOCKER_CREDENTIALS_ID = 'arss011'
+        DOCKER_CREDENTIALS_ID = 'dckr_pat_R7kkH0WUbbASQDZ9Xi3ddqrFrSA'
         // Nama lengkap image di Docker Hub (username/repo)
         DOCKER_IMAGE_NAME     = 'arss011/simple-apps-apps'
         IMAGE_TAG             = 'v1.0'

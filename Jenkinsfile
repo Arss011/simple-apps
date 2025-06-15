@@ -1,7 +1,7 @@
 pipeline {
     agent { label 'docker-dicky' }
     
-    tools { nodejs "Nodejs-18.16.0" }
+    tools { nodejs "Nodejs-18.16" }
 
     environment {
         // --- Konfigurasi Repositori ---

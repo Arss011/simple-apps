@@ -4,10 +4,8 @@ pipeline {
     tools { nodejs "Nodejs-18.16.0" }
 
     environment {
-        // --- Konfigurasi Repositori ---
         GIT_REPO_URL          = 'https://github.com/Arss011/simple-apps.git'
         
-        // --- Konfigurasi Docker ---
         DOCKER_CREDENTIALS_ID = 'dockerhub-credentials'
         DOCKER_IMAGE_NAME     = 'arss011/simple-apps-apps'
         IMAGE_TAG             = 'v1.0'
@@ -46,23 +44,14 @@ pipeline {
             }
         }
         
-        stage('Build and Push Docker Image') {
+        stage('Upload to Registry Image') {
             steps {
-                withDockerRegistry(credentialsId: env.DOCKER_CREDENTIALS_ID) {
-                    sh """
-                    docker compose down
-                    docker image prune -f
-                    
-                    docker compose build
-                    
-                    docker compose up -d
-                    
-                    docker tag simple-apps-apps:latest ${env.DOCKER_IMAGE_NAME}:${env.IMAGE_TAG}
-                    
-                    docker push ${env.DOCKER_IMAGE_NAME}:${env.IMAGE_TAG}
-                    """
-                }
+                sh '''
+                docker tag ${IMAGE_NAME} ${DOCKERHUB_CREDENTIAL}/${IMAGE_NAME}:${IMAGE_TAG}
+                docker push ${DOCKERHUB_CREDENTIAL}/${IMAGE_NAME}:${IMAGE_TAG}
+                '''
             }
+            
         }
     }
 }

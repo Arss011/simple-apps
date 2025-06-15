@@ -8,16 +8,12 @@ pipeline {
         GIT_REPO_URL          = 'https://github.com/Arss011/simple-apps.git'
         
         // --- Konfigurasi Docker ---
-        // ID kredensial Docker Hub yang ada di Jenkins. WAJIB BENAR!
         DOCKER_CREDENTIALS_ID = 'dckr_pat_R7kkH0WUbbASQDZ9Xi3ddqrFrSA'
         DOCKER_HUB_USER   = 'arss011'
-        // Nama lengkap image di Docker Hub (username/repo)
         DOCKER_IMAGE_NAME     = 'arss011/simple-apps-apps'
         IMAGE_TAG             = 'v1.0'
-        // Nama service yang ada di file docker-compose.yml
         COMPOSE_SERVICE_NAME  = 'apps' 
         
-        // --- Konfigurasi SonarQube ---
         SONAR_HOST_URL        = 'http://172.23.15.67:9000'
         SONAR_PROJECT_KEY     = 'simple-apps'
         SONAR_TOKEN_ID        = 'squ_d81d1efd61743b14d99266316f5cf832c52b1d58'

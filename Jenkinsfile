@@ -38,13 +38,11 @@ pipeline {
         
         stage('Code Review with Sonarqube') {
             steps {
-                withCredentials([string(credentialsId: env.SONAR_TOKEN_ID, variable: 'SONAR_SECRET_TOKEN')]) {
-                    sh """sonar-scanner \
-                       -Dsonar.projectKey=${env.SONAR_PROJECT_KEY} \
-                       -Dsonar.sources=. \
-                       -Dsonar.host.url=${env.SONAR_HOST_URL} \
-                       -Dsonar.login=${SONAR_SECRET_TOKEN}"""
-                }
+                sh '''sonar-scanner \
+                -Dsonar.projectKey=simple-apps \
+                -Dsonar.sources=. \
+                -Dsonar.host.url=http://172.23.15.67:9000 \
+                -Dsonar.login=${SONAR_TOKEN_ID}'''
             }
         }
         

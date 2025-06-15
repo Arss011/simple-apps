@@ -13,6 +13,9 @@ pipeline {
         SONAR_HOST_URL        = 'http://172.23.15.67:9000'
         SONAR_PROJECT_KEY     = 'simple-apps'
         SONAR_TOKEN_ID        = 'squ_d81d1efd61743b14d99266316f5cf832c52b1d58'
+        
+        DOCKER_HUB_USER       = 'arss011'
+        VERSION               = 'v1.0'
     }
 
     stages {

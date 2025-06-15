@@ -44,14 +44,23 @@ pipeline {
             }
         }
         
-        stage('Upload to Registry Image') {
+        stage('Build and Push Docker Image') {
             steps {
-                sh '''
-                docker tag ${IMAGE_NAME} ${DOCKERHUB_CREDENTIAL}/${IMAGE_NAME}:${IMAGE_TAG}
-                docker push ${DOCKERHUB_CREDENTIAL}/${IMAGE_NAME}:${IMAGE_TAG}
-                '''
+                withDockerRegistry(credentialsId: env.DOCKER_CREDENTIALS_ID) {
+                    sh """
+                    docker compose down
+                    docker image prune -f
+                    docker compose build
+                    
+                    # Memberi tag pada image yang sudah di-build oleh compose
+                    # 'simple-apps-apps' adalah nama service di docker-compose.yml
+                    docker tag ${env.DOCKER_IMAGE_NAME} ${env.DOCKER_IMAGE_NAME}:${env.IMAGE_TAG}
+                    
+                    # Mendorong image ke Docker Hub
+                    docker push ${env.DOCKER_IMAGE_NAME}:${env.IMAGE_TAG}
+                    """
+                }
             }
-            
         }
     }
 }

@@ -50,7 +50,7 @@ pipeline {
         stage('Upload to Regestry Image') {
             steps {
                 sh '''
-                docker tag ${DOCKER_IMAGE_NAME} ${DOCKER_CREDENTIALS_ID}/${DOCKER_IMAGE_NAME}:v1.0
+                docker tag ${DOCKER_IMAGE_NAME} ${DOCKER_CREDENTIALS_ID}/${DOCKER_IMAGE_NAME}:${VERSION}
                 docker push ${DOCKER_HUB_USER}/${DOCKER_IMAGE_NAME}:${VERSION}
                 '''
             }

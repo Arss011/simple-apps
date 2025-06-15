@@ -10,6 +10,7 @@ pipeline {
         // --- Konfigurasi Docker ---
         // ID kredensial Docker Hub yang ada di Jenkins. WAJIB BENAR!
         DOCKER_CREDENTIALS_ID = 'dckr_pat_R7kkH0WUbbASQDZ9Xi3ddqrFrSA'
+        DOCKER_HUB_USER   = 'arss011'
         // Nama lengkap image di Docker Hub (username/repo)
         DOCKER_IMAGE_NAME     = 'arss011/simple-apps-apps'
         IMAGE_TAG             = 'v1.0'
@@ -51,26 +52,22 @@ pipeline {
             }
         }
         
-        // Menggabungkan Build, Deploy, dan Push dalam satu stage yang aman
-        stage('Build and Push to Docker Registry') {
+        stage('Deploy compose Container') {
             steps {
-                // MEMBUNGKUS SEMUA PERINTAH DOCKER DENGAN BLOK INI
-                withDockerRegistry(credentialsId: env.DOCKER_CREDENTIALS_ID) {
-                    // MENGGUNAKAN KUTIP GANDA """...""" AGAR VARIABEL TERBACA
-                    sh """
-                    docker compose down
-                    docker image prune -f
-                    docker compose build
-                    
-                    # Memberi tag pada image yang di-build oleh compose.
-                    # Asumsinya nama service di docker-compose adalah 'apps'.
-                    # Ini akan membuat tag seperti 'arss011/simple-apps-apps:v1.0'.
-                    docker tag ${env.COMPOSE_SERVICE_NAME}:latest ${env.DOCKER_IMAGE_NAME}:${env.IMAGE_TAG}
-                    
-                    # Mendorong image yang sudah diberi tag ke Docker Hub.
-                    docker push ${env.DOCKER_IMAGE_NAME}:${env.IMAGE_TAG}
-                    """
-                }
+                sh '''
+                docker compose down
+                docker image prune
+                docker compose build
+                docker compose up -d
+                '''
+            }
+        }
+        stage('Upload to Regestry Image') {
+            steps {
+                sh '''
+                docker tag ${DOCKER_IMAGE_NAME} ${DOCKER_HUB_USER}/${DOCKER_IMAGE_NAME}:v1.0
+                docker push ${DOCKER_HUB_USER}/${DOCKER_IMAGE_NAME}:${VERSION}
+                '''
             }
         }
     }

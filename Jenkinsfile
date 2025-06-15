@@ -7,7 +7,7 @@ pipeline {
         GIT_REPO_URL          = 'https://github.com/Arss011/simple-apps.git'
         
         DOCKER_CREDENTIALS_ID = 'arss011'
-        DOCKER_IMAGE_NAME     = 'arss011/simple-apps-apps'
+        DOCKER_IMAGE_NAME     = 'simple-apps-apps'
         IMAGE_TAG             = 'v1.0'
         
         SONAR_HOST_URL        = 'http://172.23.15.67:9000'

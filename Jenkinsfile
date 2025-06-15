@@ -61,8 +61,8 @@ pipeline {
         stage('Upload to Regestry Image') {
             steps {
                 sh '''
-                docker tag ${DOCKER_IMAGE_NAME} ${DOCKER_HUB_USER}/${DOCKER_IMAGE_NAME}:v1.0
-                docker push ${DOCKER_HUB_USER}/${DOCKER_IMAGE_NAME}:${VERSION}
+                docker tag ${DOCKER_IMAGE_NAME} ${DOCKER_HUB_USER}/${DOCKER_IMAGE_NAME}:${IMAGE_TAG}
+                docker push ${DOCKER_HUB_USER}/${DOCKER_IMAGE_NAME}:${IMAGE_TAG}
                 '''
             }
         }

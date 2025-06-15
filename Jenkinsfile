@@ -10,7 +10,7 @@ pipeline {
         // --- Konfigurasi Docker ---
         DOCKER_CREDENTIALS_ID = 'dckr_pat_R7kkH0WUbbASQDZ9Xi3ddqrFrSA'
         DOCKER_HUB_USER   = 'arss011'
-        DOCKER_IMAGE_NAME     = 'arss011/simple-apps-apps'
+        DOCKER_IMAGE_NAME     = 'simple-apps-apps'
         IMAGE_TAG             = 'v1.0'
         COMPOSE_SERVICE_NAME  = 'apps' 
         
